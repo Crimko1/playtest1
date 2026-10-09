@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791118485641,
+      "tag": "0000_migration",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791223928596,
+      "tag": "0001_game_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791265895746,
+      "tag": "0002_room_containers_and_hourly_scrap",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791266852177,
+      "tag": "0003_game_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791372046012,
+      "tag": "0004_storage_accepts_new_tools",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791378524773,
+      "tag": "0005_storage_tools_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791459016981,
+      "tag": "0006_alpha02_quota_and_blueprints",
+      "breakpoints": true
+    }
+  ]
+}
