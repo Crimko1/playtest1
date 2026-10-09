@@ -13,12 +13,12 @@ export type ItemDef = {
   img: string;
 };
 
-const scrapImages = import.meta.glob<string>("../assets/scrap/*.png", { eager: true, query: "?url", import: "default" });
+const scrapImages = import.meta.glob<string>("../assets/item-icons/*.png", { eager: true, query: "?url", import: "default" });
 const S = (id: string, name: string, value: number, slots: 1 | 2): ItemDef => ({
-  id, name, value, slots, scrap: true, img: scrapImages[`../assets/scrap/${id}.png`] ?? `/items/${id}.png`,
+  id, name, value, slots, scrap: true, img: scrapImages[`../assets/item-icons/${id}.png`] ?? `/items/${id}.png`,
 });
 const T = (id: string, name: string): ItemDef => ({
-  id, name, value: 0, slots: 1, scrap: false, img: `/items/${id}.png`,
+  id, name, value: 0, slots: 1, scrap: false, img: scrapImages[`../assets/item-icons/${id}.png`] ?? `/items/${id}.png`,
 });
 
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries(
