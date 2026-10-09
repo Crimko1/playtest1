@@ -1,4 +1,4 @@
-import { upperBoxes } from "./upper-world";
+import { upperBoxes, STAIR_ROOMS, ACCESS_THEMES, stairOrigin } from "./upper-world";
 import { rng, WALLPAPERS, FLOORS, type Wallpaper, type Floor } from "./textures";
 import { ITEMS, SCRAP_IDS } from "./data";
 import { segmentBlocked, hourlyScrapTarget } from "./rules";
@@ -135,10 +135,10 @@ function gen() {
       props: [], spots: [], minions: 0, boxes: [], fog: rr(), parts: [], water: [], feature: th.feature, layout: th.layout,
     };
     if (idx === 0) room.ceilH = 3;
-    const elev = ELEVATOR_ROOMS.includes(idx);
-    if (elev) room.layout = "open";
-    buildLayout(room, elev ? "open" : th.layout, rr);
-    if (th.feature !== "none" && !elev) buildFeature(room, th.feature, rr);
+    const elev = ELEVATOR_ROOMS.includes(idx), stair = STAIR_ROOMS.includes(idx);
+    if (elev || stair) room.layout = "open";
+    buildLayout(room, elev || stair ? "open" : th.layout, rr);
+    if (th.feature !== "none" && !elev && !stair) buildFeature(room, th.feature, rr);
     const blocked = [...room.parts, ...room.water];
     if (elev) {
       const e = elevatorCabin(room), H = 2.6;
@@ -150,6 +150,7 @@ function gen() {
       room.parts.push(...cab);
       blocked.push({ x0: e.x0, x1: e.x1 + 1.2, z0: e.z0, z1: e.z1, y0: 0, y1: H });
     }
+    if(stair){const o=stairOrigin(idx);blocked.push({x0:o.x-1.2,x1:o.x+3.4,z0:o.z-.7,z1:o.z+10.4,y0:0,y1:12});room.name=ACCESS_THEMES[STAIR_ROOMS.indexOf(idx)];room.ceilH=12;room.light="lit";}
     // props in quadrants, keep cross corridor clear
     const n = th.density[0] + Math.floor(rr() * (th.density[1] - th.density[0] + 1));
     const tries = n * 12;
@@ -212,7 +213,7 @@ function gen() {
   rooms.forEach((rm) => rm.props.forEach((p) => rm.boxes.push({ x0: p.x - p.w / 2, x1: p.x + p.w / 2, z0: p.z - p.d / 2, z1: p.z + p.d / 2, y0: 0, y1: p.h })));
 }
 gen();
-[60,100,160,220,280].forEach((idx,i)=>{const r=rooms[idx];r.name=["Hill Access","Suburban Exit","The Quiet Stair","House Passage","Sky Service"][i];r.ceilH=Math.max(r.ceilH,5);r.boxes.push(...Array.from({length:12},(_,n)=>({x0:r.cx+2.2,x1:r.cx+3.8,z0:r.cz+2+n*.25,z1:r.cz+2+(n+1)*.25,y0:0,y1:(n+1)*.2})));r.spots=r.spots.filter(s=>s.y>0||!r.boxes.some(b=>b.y1>.3&&s.x>b.x0&&s.x<b.x1&&s.z>b.z0&&s.z<b.z1));});
+STAIR_ROOMS.forEach(idx=>{const r=rooms[idx],o=stairOrigin(idx);r.boxes.push({x0:o.x+.92,x1:o.x+1.28,z0:o.z-.6,z1:o.z+9,y0:0,y1:12});});
 
 export function roomAt(x: number, z: number): Room | undefined {
   const c = Math.floor((x - X0) / CELL), r = Math.floor(z / CELL);
@@ -293,8 +294,8 @@ export const proomBoxes: Box[] = (() => {
 /** dynamic colliders (doors, lab stations, decor) */
 export const dynBoxes: Box[] = [];
 
-export function nearbyBoxes(x: number, z: number): Box[] {
-  if (x >= 1000) return upperBoxes;
+export function nearbyBoxes(x: number, z: number, upper = false): Box[] {
+  if (upper) return upperBoxes;
   if (x > 400) return [...proomBoxes, ...dynBoxes];
   const out: Box[] = [...dynBoxes];
   if (z < 0.5) out.push(...labBoxes);
@@ -330,7 +331,8 @@ export function lineOfSight(ax: number, az: number, bx: number, bz: number) {
   const boxes = new Set<Box>(dynBoxes);
   if (az < 0 || bz < 0) labBoxes.forEach(b => boxes.add(b));
   const minX = Math.min(ax, bx), maxX = Math.max(ax, bx), minZ = Math.min(az, bz), maxZ = Math.max(az, bz);
-  for (const room of rooms) if (room.x0 <= maxX && room.x0 + CELL >= minX && room.z0 <= maxZ && room.z0 + CELL >= minZ) room.boxes.forEach(b => boxes.add(b));
+  const c0=Math.max(0,Math.floor((minX-X0)/CELL)),c1=Math.min(COLS-1,Math.floor((maxX-X0)/CELL)),r0=Math.max(0,Math.floor(minZ/CELL)),r1=Math.min(ROWS-1,Math.floor(maxZ/CELL));
+  for(let r=r0;r<=r1;r++)for(let c=c0;c<=c1;c++)rooms[r*COLS+c].boxes.forEach(b=>boxes.add(b));
   for (const b of boxes) if (b.y0 <= 1.5 && b.y1 >= 1.7 && segmentBlocked(ax, az, bx, bz, b)) return false;
   return true;
 }

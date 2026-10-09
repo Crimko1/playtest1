@@ -49,5 +49,5 @@ export function UpperLevel(){
  useEffect(()=>()=>terrain.dispose(),[terrain]);
  useFrame(()=>{const upper=isUpper(rt.pos.x,rt.pos.y,rt.pos.z),visible=!game.get().inRoom&&(upper||rt.pos.y>2);if(visible!==show)setShow(visible);if(scene.fog instanceof THREE.Fog){scene.fog.near=upper?25:6;scene.fog.far=upper?90:34;scene.fog.color.set(upper?'#b4c5c8':'#0b0a04');}if(scene.background instanceof THREE.Color)scene.background.set(upper?'#c1dbe7':'#000');});
  if(!show)return null;
- return <group><hemisphereLight args={['#d9edf4','#8a9063',.7]}/><directionalLight position={[80,90,30]} intensity={1.4}/><mesh geometry={terrain}><meshLambertMaterial map={grass} side={THREE.DoubleSide}/></mesh>{HOUSES.map((_,i)=><House key={i} i={i}/>)}{HOUSES.map((h,i)=><group key={i} position={[h.x-4,12,h.z+5]}><TreeModel height={5+i%3} variant={i}/></group>)}</group>;
+ return <group><hemisphereLight args={['#d9edf4','#8a9063',.7]}/><directionalLight position={[80,90,30]} intensity={1.4}/><mesh geometry={terrain}><meshLambertMaterial map={grass} side={THREE.DoubleSide}/></mesh>{HOUSES.map((_,i)=><House key={i} i={i}/>)}{HOUSES.map((h,i)=><group key={i} position={[h.x-4,12,h.z+5]} scale={1+i%3*.15}><TreeModel/></group>)}</group>;
 }
