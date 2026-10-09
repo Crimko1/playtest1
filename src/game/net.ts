@@ -4,6 +4,7 @@ import { game, todayStr, addXp } from "./store";
 import { rt } from "./runtime";
 import { fetchPlayer } from "./cloud";
 import { sfx } from "./audio";
+import { isUpper } from "./upper-world";
 
 export type Remote = {
   id: string; name: string; lvl: number; x: number; y: number; z: number; yaw: number; held: string;
@@ -17,7 +18,7 @@ let lastAvatar: string | null = null;
 
 export function where() {
   const s = game.get();
-  return s.inRoom ? `room:${s.inRoom}` : rt.pos.x>=1000 ? "upper" : "world";
+  return s.inRoom ? `room:${s.inRoom}` : isUpper(rt.pos.x,rt.pos.y,rt.pos.z) ? "upper" : "world";
 }
 
 export function connectNet() {

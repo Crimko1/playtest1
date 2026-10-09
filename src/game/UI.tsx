@@ -73,7 +73,7 @@ export function HUD() {
       </div>
        <div className={`hud-quota absolute right-5 top-4 text-right ${s.quota.completed ? "text-success" : "text-primary"}`}>
         <div>QUOTA ${s.quota.progress} / ${s.quota.target}</div>
-        <div className="text-muted-foreground text-base">resets at midnight · {s.inLab ? "LABORATORY — SAFE" : s.inRoom ? "PERSONAL ROOM" : rt.pos.x>=1000?"LEVEL 94 — SAFE":"THE BACKROOMS"}</div>
+        <div className="text-muted-foreground text-base">resets at midnight · {s.inLab ? "LABORATORY — SAFE" : s.inRoom ? "PERSONAL ROOM" : rt.pos.y>=12?"LEVEL 94 — SAFE":"THE BACKROOMS"}</div>
       </div>
       {showToast && <div className="absolute left-1/2 top-24 -translate-x-1/2 bg-card/80 border border-border px-4 py-1 text-primary">{s.toast}</div>}
       {flash && (

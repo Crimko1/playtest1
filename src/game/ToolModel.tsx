@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { metalTex, screenTex } from "./textures";
 import { rt } from "./runtime";
 import { game, useGame } from "./store";
+import { OUTFITS } from "./data";
 import { held } from "./items";
 
 function Box({p=[0,0,0],s,c="steel"}:{p?:[number,number,number];s:[number,number,number];c?:string}) { const map=useMemo(()=>metalTex(c==="steel"?"#a9ada5":c==="grip"?"#272c29":"#d8c7a0"),[c]);return <mesh position={p}><boxGeometry args={s}/><meshStandardMaterial map={map} metalness={c==="steel"?.7:.1} roughness={.5}/></mesh>; }
@@ -25,7 +26,9 @@ export function ToolModel({id}:{id:string}) {
 }
 export function FirstPersonTool(){
  const item=useGame(s=>{const i=s.save.inventory[s.slot];return i?.id==="__big"?s.save.inventory[s.slot-1]?.id:i?.id;});
+ const outfit=useGame(s=>s.save.outfit);
  const ref=useRef<THREE.Group>(null);
- useFrame((_,raw)=>{const g=ref.current;if(!g)return;const s=game.get();const h=held();g.visible=!!h&&!!h.id&&!s.panel&&!s.jumpscare&&["axe","knife","pipe","pistol","radar","navigator","health","adrenaline","flashcharge","tear","papermap"].includes(h.id);const dt=Math.min(raw,.05);rt.swing=Math.max(0,rt.swing-dt*4);const wave=Math.sin(rt.swing*Math.PI);g.position.set(.32-wave*(item==="knife"?.13:.06),-.29+Math.sin(rt.handAnim)*.015+wave*.05,-.65+wave*(item==="pistol"?.09:-.08));g.rotation.set(item==="pistol"?-wave*.25:wave*.5,0,item==="axe"?-wave*.8:-wave*.15);});
- return <group ref={ref} position={[.32,-.29,-.65]} scale={.65}><ToolModel id={item??""}/><Box p={[0,-.12,.02]} s={[.09,.12,.08]} c="grip"/><Box p={[0,-.25,.02]} s={[.085,.17,.08]} c="wood"/></group>;
+ const color=OUTFITS.find(o=>o.id===outfit)?.color??OUTFITS[0].color;
+ useFrame((_,raw)=>{const g=ref.current;if(!g)return;const s=game.get();const h=held();g.visible=!!h?.id&&!s.panel&&!s.jumpscare&&["axe","knife","pipe","pistol","radar","navigator","health","adrenaline","flashcharge","tear","papermap"].includes(h.id);const dt=Math.min(raw,.05);rt.swing=Math.max(0,rt.swing-dt*3.2);const wave=Math.sin(rt.swing*Math.PI);g.position.set(.31-wave*.22,-.31+wave*.08,-.72-wave*.26);g.rotation.set(-wave*.75,wave*.15,-wave*(item==="axe"?1.05:.45));});
+ return <group ref={ref} position={[.31,-.31,-.72]} scale={.92}><ToolModel id={item??""}/><mesh position={[0,-.13,.02]}><boxGeometry args={[.13,.16,.12]}/><meshStandardMaterial color="#262b28" roughness={.85}/></mesh><mesh position={[0,-.31,.03]}><boxGeometry args={[.16,.25,.14]}/><meshStandardMaterial color={color} roughness={.9}/></mesh></group>;
 }
