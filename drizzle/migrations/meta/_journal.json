@@ -50,6 +50,27 @@
       "when": 1791459016981,
       "tag": "0006_alpha02_quota_and_blueprints",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791534937823,
+      "tag": "0007_game_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791534948171,
+      "tag": "0008_storage_tools_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791534982885,
+      "tag": "0009_restore_alpha02_quota",
+      "breakpoints": true
     }
   ]
 }
