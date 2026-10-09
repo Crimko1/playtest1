@@ -27,6 +27,9 @@
 - [x] Mimic/Akamanto chase sounds, auto-free mouse on screens, flush face screen, flat-front heads, unique outfit headgear.
 
 ## Alpha 0.2
+- [ ] Replace E teleports with ten differently themed, scattered continuous sky stairways and safe Level 94.
+- [ ] Replace all scrap/tool artwork with detailed transparent PNG icons and fix outfit-matched full-size hands and forward attacks.
+- [ ] Profile direction-dependent lag, reduce rendering/navigation hotspots, and verify remaining Alpha 0.2 features in the signed-in game.
 - [ ] Fix mirror hands, radar direction, Black Rose/laboratory cleanup, TAB/ESC and jumpscare ordering; keep simulation live.
 - [ ] Faster sprint/bob, accurate held tools, held labels, larger heavy scrap, collision and performance improvements.
 - [ ] Add 21 scrap types/icons, three music tracks, Stalker and updated entity behavior.
