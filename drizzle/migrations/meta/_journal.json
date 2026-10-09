@@ -57,6 +57,13 @@
       "when": 1791534937823,
       "tag": "0007_game_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791534948171,
+      "tag": "0008_storage_tools_trigger",
+      "breakpoints": true
     }
   ]
 }
