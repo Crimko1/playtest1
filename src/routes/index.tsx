@@ -1,24 +1,52 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useGame, game } from "@/game/store";
+import { GameCanvas } from "@/game/Scene";
+import { HUD, Panels } from "@/game/UI";
+import { Intro, Auth, Menu, Create, Drop } from "@/game/Screens";
+import { supabase } from "@/integrations/supabase/client";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Backrooms Q — Grace Studios" },
+      { name: "description", content: "A first-person PS2-style multiplayer backrooms horror game. Scavenge scrap, meet the quota, survive the entities." },
+      { property: "og:title", content: "Backrooms Q" },
+      { property: "og:description", content: "Liminal PS2-style multiplayer horror in the backrooms." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=VT323&display=swap" },
+    ],
+  }),
+  component: GamePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function GamePage() {
+  const screen = useGame((s) => s.screen);
+  const vhs=useGame(s=>s.save.vhs!==false);
+  useEffect(() => {
+    try { const v = JSON.parse(localStorage.getItem("brq_vol") || "null"); if (v) game.set({ musicVol: v.mv, sfxVol: v.sv }); } catch { /* ignore */ }
+    const { data } = supabase.auth.onAuthStateChange((ev, sess) => {
+      if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") {
+        game.set({ userId: sess?.user.id ?? null });
+        if (game.get().screen === "auth" && sess) game.set({ screen: "menu" });
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="fixed inset-0 bg-background select-none">
+      <GameCanvas />
+      {screen === "intro" && <Intro />}
+      {screen === "auth" && <Auth />}
+      {screen === "menu" && <Menu />}
+      {screen === "create" && <Create />}
+      {screen === "drop" && <Drop />}
+       {screen === "game" && <>{vhs&&<div className="crt vhs" />}<HUD /><Panels /></>}
     </div>
   );
 }
