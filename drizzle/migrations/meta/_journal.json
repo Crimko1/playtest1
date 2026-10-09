@@ -50,6 +50,13 @@
       "when": 1791459016981,
       "tag": "0006_alpha02_quota_and_blueprints",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791534937823,
+      "tag": "0007_game_tables",
+      "breakpoints": true
     }
   ]
 }

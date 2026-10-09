@@ -14,13 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blueprint_jobs: {
+        Row: {
+          decor_key: string
+          owner_id: string
+          ready_at: string
+          started_at: string
+          tool_id: string
+        }
+        Insert: {
+          decor_key: string
+          owner_id: string
+          ready_at?: string
+          started_at?: string
+          tool_id: string
+        }
+        Update: {
+          decor_key?: string
+          owner_id?: string
+          ready_at?: string
+          started_at?: string
+          tool_id?: string
+        }
+        Relationships: []
+      }
+      daily_quota: {
+        Row: {
+          completed: boolean
+          day: string
+          progress: number
+          target: number
+        }
+        Insert: {
+          completed?: boolean
+          day: string
+          progress?: number
+          target: number
+        }
+        Update: {
+          completed?: boolean
+          day?: string
+          progress?: number
+          target?: number
+        }
+        Relationships: []
+      }
+      hourly_scrap_claims: {
+        Row: {
+          claimed_at: string
+          hour: number
+          ordinal: number
+          player_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          hour: number
+          ordinal: number
+          player_id: string
+        }
+        Update: {
+          claimed_at?: string
+          hour?: number
+          ordinal?: number
+          player_id?: string
+        }
+        Relationships: []
+      }
+      players: {
+        Row: {
+          avatar_url: string | null
+          id: string
+          level: number
+          name: string
+          room: Json
+          save: Json
+          total_quota: number
+          trophies: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          id: string
+          level?: number
+          name?: string
+          room?: Json
+          save?: Json
+          total_quota?: number
+          trophies?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          id?: string
+          level?: number
+          name?: string
+          room?: Json
+          save?: Json
+          total_quota?: number
+          trophies?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      room_containers: {
+        Row: {
+          id: string
+          items: Json
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          items?: Json
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          items?: Json
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      blueprint_action: {
+        Args: { action: string; decor: string; tool?: string }
+        Returns: Json
+      }
+      claim_hourly_scrap: {
+        Args: { requested_hour: number; requested_ordinal: number }
+        Returns: boolean
+      }
+      deposit_scrap: {
+        Args: { amount: number }
+        Returns: {
+          completed: boolean
+          day: string
+          progress: number
+          target: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "daily_quota"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      get_today_quota: {
+        Args: never
+        Returns: {
+          completed: boolean
+          day: string
+          progress: number
+          target: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "daily_quota"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
