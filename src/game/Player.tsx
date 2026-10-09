@@ -1,4 +1,4 @@
-import { upperGround } from "./upper-world";
+import { upperGround, isUpper, stairHeight, inStairShaft } from "./upper-world";
 import { FirstPersonTool } from "./ToolModel";
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -148,13 +148,15 @@ export function Player() {
     if (want.lengthSq() > 0) want.normalize().multiplyScalar(speed);
     rt.vel.lerp(want, 1 - Math.exp(-12 * dt));
     let nx = rt.pos.x + rt.vel.x * dt, nz = rt.pos.z + rt.vel.z * dt;
-    const upstairs=rt.pos.x>=1000;
-    const ceiling = upstairs ? 80 : s.inRoom ? PROOM.h : rt.pos.z < 0 ? LAB.h : roomAt(nx, nz)?.ceilH ?? 4;
+    const upstairs=isUpper(rt.pos.x,rt.pos.y,rt.pos.z);
+    const stair=stairHeight(nx,nz);
+    const ceiling = upstairs || inStairShaft(nx,nz) ? 80 : s.inRoom ? PROOM.h : rt.pos.z < 0 ? LAB.h : roomAt(nx, nz)?.ceilH ?? 4;
     if (rt.grounded && rt.pos.y === 0) rt.verticalVelocity = 0;
     const vertical = verticalStep(rt.pos.x, rt.pos.z, rt.pos.y, rt.verticalVelocity, dt, nearbyBoxes(rt.pos.x, rt.pos.z), ceiling);
     rt.pos.y = vertical.y; rt.verticalVelocity = vertical.velocity; rt.grounded = vertical.grounded;
-    if(upstairs){const floor=upperGround(nx,nz);if(rt.pos.y<=floor){rt.pos.y=floor;rt.verticalVelocity=0;rt.grounded=true;}}
-    [nx, nz] = collide(nx, nz, 0.32, rt.pos.y);
+    if(stair!==null&&rt.pos.y>=stair-.55&&rt.verticalVelocity<=0){rt.pos.y=stair;rt.verticalVelocity=0;rt.grounded=true;}
+    else if(upstairs&&!inStairShaft(nx,nz)){const floor=upperGround(nx,nz);if(rt.pos.y<=floor){rt.pos.y=floor;rt.verticalVelocity=0;rt.grounded=true;}}
+    [nx, nz] = collide(nx, nz, 0.32, rt.pos.y, upstairs ? undefined : nearbyBoxes(nx,nz).filter(b=>rt.pos.y<10||b.y0>=12));
     rt.pos.x = nx; rt.pos.z = nz;
     const sp = Math.hypot(rt.vel.x, rt.vel.z);
     rt.moving = sp / 3; rt.running = running;
@@ -228,12 +230,10 @@ export function Player() {
       if (h) {
          hand.current.visible = ITEMS[h.id].scrap && !s.panel && !s.jumpscare;
         if (m.map !== imageTex(ITEMS[h.id].img)) { m.map = imageTex(ITEMS[h.id].img); m.needsUpdate = true; }
-        rt.swing = Math.max(0, rt.swing - dt * 4);
-        rt.handAnim = Math.max(0, rt.handAnim - dt * 2);
         const sw = Math.sin(rt.swing * Math.PI);
         hand.current.position.set(0.42 - sw * 0.25, -0.38 + Math.sin(bob.current) * 0.02 + sw * 0.1, -0.75 - sw * 0.2);
         m.rotation = -sw * 1.2;
-        const sc = ITEMS[h.id].slots === 2 ? 0.5 : 0.36; hand.current.scale.set(sc, sc, sc);
+         const sc = ITEMS[h.id].slots === 2 ? 0.82 : 0.52; hand.current.scale.set(sc, sc, sc);
       } else hand.current.visible = false;
     }
     shotT.current -= dt;

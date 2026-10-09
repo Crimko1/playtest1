@@ -52,7 +52,7 @@ function MinionMesh({ m }: { m: Minion }) {
     }
     g.current.visible = true;
     const dx = rt.pos.x - m.x, dz = rt.pos.z - m.z, d = Math.hypot(dx, dz);
-     const aware = d < 30 && rt.pos.z > 0 && rt.pos.x < 400 && lineOfSight(m.x, m.z, rt.pos.x, rt.pos.z) && s.screen === "game" && !s.jumpscare && s.panel !== "dead";
+     const aware = d < 30 && rt.pos.y<.5 && rt.pos.z > 0 && rt.pos.x < 400 && lineOfSight(m.x, m.z, rt.pos.x, rt.pos.z) && s.screen === "game" && !s.jumpscare && s.panel !== "dead";
     let moving = 0;
     if (aware) {
       m.yaw = Math.atan2(dx, dz);
@@ -66,7 +66,7 @@ function MinionMesh({ m }: { m: Minion }) {
     if (m.atk > 0) {
       m.atk -= dt;
       if (m.atk <= 0) {
-        if (d < 1.6 && !s.jumpscare && lineOfSight(m.x, m.z, rt.pos.x, rt.pos.z)) {
+        if (d < 1.6 && rt.pos.y<.5 && !s.jumpscare && lineOfSight(m.x, m.z, rt.pos.x, rt.pos.z)) {
           const sv = skillCount(s.save, "survivor");
           const dmg = 10 * (1 - (sv >= 3 ? 0.1 : 0) - (sv >= 7 ? 0.15 : 0));
           let hp = s.health - dmg;
@@ -201,7 +201,7 @@ function BotSprite({ b }: { b: Bot }) {
   useFrame(({ clock }, raw) => {
     const dt = Math.min(raw, 0.05);
     const s = game.get(); const cam = rt.camera; if (!cam || !ref.current) return;
-     const inWorld = rt.pos.z > 0 && rt.pos.x < 400 && s.screen === "game" && !s.jumpscare && s.panel !== "dead";
+     const inWorld = rt.pos.y<.5 && rt.pos.z > 0 && rt.pos.x < 400 && s.screen === "game" && !s.jumpscare && s.panel !== "dead";
     b.cooldown = Math.max(0, b.cooldown - dt);
     if (b.id === "mimic" && identity.hour !== Math.floor(Date.now()/3600000)) setIdentity(mimicIdentity());
     if (disguise.current) disguise.current.visible = false;
