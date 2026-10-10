@@ -61,7 +61,32 @@ export function radarOffset(dx: number, dz: number, yaw: number) { return { x: d
 export function statusKey(key: string, panel: boolean, dying: boolean) { return dying ? "none" : panel && (key === "Escape" || key === "Tab") ? "close" : !panel && key === "Tab" ? "open" : "none"; }
 export const CHASE_COOLDOWN = 10;
 export const MAKA_CHASE_SECONDS = 12;
-export const MAKA_BLACKOUT_MS = 60000;
+export const MAKA_BLACKOUT_MS = 40000;
+export const MAKA_SPEED = 7.5;
+/** Maka freezes while watched and rushes otherwise. */
+export function makaSpeed(watched: boolean) { return watched ? 0 : MAKA_SPEED; }
+export const STALKER_RUSH_SPEED = 42;
+export const STALKER_EFFECT_MS = 5000;
+export const STALKER_FLASH_MS = 1000;
+export const THIRSTY_CHASE_SECONDS = 10;
+export const THIRSTY_COOLDOWN = 10;
+export const CHARLE_TASK_SECONDS = 40;
+export const CHARLE_COOLDOWN = 120;
+export const CHARLE_TASKS = {
+  bunny: {
+    item: "charlebunny",
+    ask: ["Oh.. my dear bunny got lost and i am searching everywhere for him..", "If i lose my bunny i'll go crazy..", "Wait, i can you help me search it?", "Thanks! Now please hurry, i am running out of patience!"],
+    thanks: ["Oh my beautiful PRECIOUS bunny!..", "Yes! YES! I love you too! Don't ever leave me again.."],
+  },
+  food: {
+    item: "charlefood",
+    ask: ["Hey you in the suit..", "You can say no.. aren't you?..", "So.. i lost my food somewhere around there and i need to eat something.", "A griddy flying creature stole my yum.. it cannot be far..", "My teeth needs something to melt!"],
+    thanks: ["AH! SO YUMMY! SO GOOD! SO MELODIC!", "Good job kid, i will remember you."],
+  },
+} as const;
+export type CharleTask = keyof typeof CHARLE_TASKS;
+/** Seconds left on Charle's task, never below zero. */
+export function charleTimeLeft(startedAt: number, now: number) { return Math.max(0, CHARLE_TASK_SECONDS - (now - startedAt) / 1000); }
 export function dailyQuotaTarget(players: number) { return Math.min(20000, 10000 + Math.max(0, Math.floor(players)) * 100); }
 export function carrierSlots(skills: number) { return 4 + (skills >= 7 ? 1 : 0) + (skills >= 10 ? 1 : 0); }
 export function blackRoseEligible(battery: number, roll: number) { return battery < 30 && roll < .3; }
