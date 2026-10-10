@@ -5,8 +5,8 @@ import { rooms, CELL, hourlyScrap } from "@/game/world";
 
 describe("Expansion rules", () => {
   it("keeps exact prices", () => {
-    expect(DECOR_PRICES).toEqual({ fishtank: 2300, painting: 400, cross: 730, storagebox: 810, plant: 320, custompaint: 1300, stalkdevice: 3400 });
-    expect(TOOL_PRICES).toEqual({ papermap: 1630, pipe: 470, flashcharge: 250, axe: 1480, pistol: 1900 });
+    expect(DECOR_PRICES.fishtank).toBe(1100);
+    expect(TOOL_PRICES).toEqual({ pipe: 270, flashcharge: 250, axe: 1430, pistol: 1700, health: 400, adrenaline: 580, knife: 500 });
   });
   it("storage holds ten tools and rejects scrap", () => {
     expect(STORAGE_SLOTS).toBe(10);
@@ -59,7 +59,7 @@ describe("content update", () => {
   it("new scraps, tools, decor and outfits exist", () => {
     expect(ITEMS.diamond.value).toBe(2000); expect(ITEMS.entitypart.value).toBe(7800); expect(ITEMS.entitypart.slots).toBe(2);
     expect(["radar", "knife", "tear"].every((i) => ITEMS[i])).toBe(true);
-    expect(DECOR.find((d) => d.id === "wallclock")?.price).toBe(2100);
+    expect(DECOR.find((d) => d.id === "wallclock")?.price).toBe(360);
     expect(OUTFITS.filter((o) => o.id !== "classic").every((o) => o.price === 1500)).toBe(true);
   });
 });

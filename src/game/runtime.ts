@@ -15,6 +15,7 @@ export type Interactable = {
 export type Dropped = { key: string; id: string; x: number; y: number; z: number; uses?: number; ammo?: number; sketch?: string; at?: number };
 
 export const rt = {
+  exhausted: false,
   pos: new THREE.Vector3(-4.5, 0, -10),
   vel: new THREE.Vector3(),
   verticalVelocity: 0,
