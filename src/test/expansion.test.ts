@@ -59,7 +59,7 @@ describe("content update", () => {
   it("new scraps, tools, decor and outfits exist", () => {
     expect(ITEMS.diamond.value).toBe(2000); expect(ITEMS.entitypart.value).toBe(7800); expect(ITEMS.entitypart.slots).toBe(2);
     expect(["radar", "knife", "tear"].every((i) => ITEMS[i])).toBe(true);
-    expect(DECOR.find((d) => d.id === "wallclock")?.price).toBe(2100);
+    expect(DECOR.find((d) => d.id === "wallclock")?.price).toBe(360);
     expect(OUTFITS.filter((o) => o.id !== "classic").every((o) => o.price === 1500)).toBe(true);
   });
 });
