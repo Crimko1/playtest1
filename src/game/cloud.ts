@@ -1,15 +1,46 @@
 import { supabase } from "@/integrations/supabase/client";
 import { emptySave, game, registerSaver, todayStr, type Save } from "./store";
 import { upgradeRoom } from "./save-upgrade";
+import { REMOVED_DECOR, REMOVED_ITEMS } from "./rules";
+
+const backupKey = (uid: string) => `brq_save_backup_${uid}`;
+let loadedFor: string | null = null;
+
+/** Drop removed items/decor so old saves never break, but keep everything else. */
+export function sanitizeSave(s: Save): Save {
+  const okDecor = (id: string) => !REMOVED_DECOR.includes(id);
+  return {
+    ...s,
+    inventory: s.inventory.map((i) => (i && REMOVED_ITEMS.includes(i.id) ? null : i)),
+    storage: s.storage.filter((i) => !i || !REMOVED_ITEMS.includes(i.id)),
+    decorOwned: s.decorOwned.filter(okDecor),
+    room: s.room.filter((p) => okDecor(p.id)),
+  };
+}
 
 export async function loadPlayer(userId: string) {
-  const { data } = await supabase.from("players").select("*").eq("id", userId).maybeSingle();
-  if (data && (data.save as any)?.created) {
-    const save = await upgradeRoom({ ...emptySave(), ...(data.save as unknown as Save) }, userId);
+  let backup: Save | null = null;
+  try { const raw = localStorage.getItem(backupKey(userId)); if (raw) backup = JSON.parse(raw); } catch { backup = null; }
+  // Retry on network/server errors: never treat a failed read as "no character".
+  let data: any = null, error: unknown = null;
+  for (let i = 0; i < 4; i++) {
+    const r = await supabase.from("players").select("*").eq("id", userId).maybeSingle();
+    data = r.data; error = r.error;
+    if (!error) break;
+    await new Promise((res) => setTimeout(res, 800 * (i + 1)));
+  }
+  const cloud = data && (data.save as any)?.created ? (data.save as Save) : null;
+  if (error && !backup) throw error; // keep the menu waiting rather than showing "create character"
+  const cloudT = Date.parse(data?.updated_at ?? "") || 0;
+  const pick = cloud && (!backup?.created || cloudT >= ((backup as any)._t ?? 0)) ? cloud : backup?.created ? backup : null;
+  if (pick) {
+    const save = sanitizeSave(await upgradeRoom({ ...emptySave(), ...pick }, userId));
+    loadedFor = userId;
     game.set({ save });
     await writeSave(save);
     localStorage.setItem("brq_has_save", "1");
   } else {
+    loadedFor = userId;
     game.set({ save: emptySave() });
     localStorage.removeItem("brq_has_save");
   }
@@ -17,7 +48,8 @@ export async function loadPlayer(userId: string) {
 
 export async function writeSave(s: Save) {
   const uid = game.get().userId;
-  if (!uid) return;
+  if (!uid || !s.created || loadedFor !== uid) return; // never overwrite a save we have not loaded
+  try { localStorage.setItem(backupKey(uid), JSON.stringify({ ...s, _t: Date.now() })); } catch { /* storage full */ }
   await supabase.from("players").upsert({
     id: uid, name: s.name, avatar_url: s.avatar, level: s.level, trophies: s.trophies,
     room: s.room as any, save: s as any, updated_at: new Date().toISOString(),
@@ -30,6 +62,7 @@ export async function deleteSave() {
   const uid = game.get().userId;
   if (!uid) return;
   await supabase.from("players").delete().eq("id", uid);
+  localStorage.removeItem(backupKey(uid));
   localStorage.removeItem("brq_has_save");
 }
 
@@ -56,7 +89,7 @@ export async function checkDayRollover() {
   const today = todayStr();
   if (s.lastDay && s.lastDay !== today) {
     const { data } = await supabase.from("daily_quota").select("completed").eq("day", s.lastDay).maybeSingle();
-    if (!data || !data.completed) {
+    if (data && !data.completed) {
       game.setSave({ inventory: s.inventory.map(() => null), money: 0, lastDay: today });
       game.toast("Yesterday's quota failed. Your items and money were taken.");
       return;
