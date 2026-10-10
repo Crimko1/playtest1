@@ -55,7 +55,11 @@ export function Menu() {
   const created = useGame((s) => s.save.created);
   const [loaded, setLoaded] = useState(false);
   const [view, setView] = useState<"main" | "options">("main");
-  useEffect(() => { if (uid) loadPlayer(uid).catch(() => game.set({ save: game.get().save })).finally(() => setLoaded(true)); }, [uid]);
+  useEffect(() => {
+    if (!uid) return; let stop = false;
+    const tryLoad = () => loadPlayer(uid).then(() => { if (!stop) setLoaded(true); }).catch(() => { if (stop) return; game.toast("Connecting to your save…"); setTimeout(tryLoad, 3000); });
+    tryLoad(); return () => { stop = true; };
+  }, [uid]);
   const begin = () => { initAudio(); startAmbience(); };
   // start menu music on the first click/key anywhere (browsers block sound before that)
   useEffect(() => {

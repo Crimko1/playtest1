@@ -6,7 +6,7 @@ import { rooms, CELL, hourlyScrap } from "@/game/world";
 describe("Expansion rules", () => {
   it("keeps exact prices", () => {
     expect(DECOR_PRICES).toEqual({ fishtank: 2300, painting: 400, cross: 730, storagebox: 810, plant: 320, custompaint: 1300, stalkdevice: 3400 });
-    expect(TOOL_PRICES).toEqual({ papermap: 1630, pipe: 470, flashcharge: 250, axe: 1480, pistol: 1900 });
+    expect(TOOL_PRICES).toEqual({ pipe: 270, flashcharge: 250, axe: 1430, pistol: 1700, health: 400, adrenaline: 580, knife: 500 });
   });
   it("storage holds ten tools and rejects scrap", () => {
     expect(STORAGE_SLOTS).toBe(10);
