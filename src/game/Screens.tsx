@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { game, useGame, emptySave } from "./store";
 import { TREES, VERSION, type TreeId } from "./data";
 import { Options } from "./UI";
-import { initAudio, startAmbience, sfx } from "./audio";
+import { initAudio, startAmbience, sfx, playIntro } from "./audio";
 import { loadPlayer, writeSave, refreshQuota, checkDayRollover } from "./cloud";
 import { connectNet } from "./net";
 import { rt } from "./runtime";

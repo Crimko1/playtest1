@@ -39,3 +39,22 @@
 - [ ] Expand five staircase rooms into connected safe Level 94, improve trees, doorway light, elevator closure, personal door and compact lab.
 - [ ] Apply 10000–20000 quota, VHS toggle and reference-inspired HUD.
 - [ ] Run regression tests and authenticated browser checks; record limitations honestly.
+
+## October 10 request (open)
+- [x] 1 Save safety (retry, local backup, no overwrite before load, no wipe when quota row missing)
+- [x] 4 Removed Paper Map, Upper Camera, Candles, Jukebox (old saves cleaned)
+- [x] 6 / 27 New item and decoration prices
+- [x] 14 Fullscreen on click · 15 Sprint locks at 1 stamina
+- [x] 18 / 19 New sound files, heartbeat chase loop + end sound, door close, intro sound
+- [x] 24 (part) Headphones "... loop" screen
+- [ ] 2 Remove stairs/upper level, replace with community rooms
+- [ ] 3 Smaller laboratory · 11b back door hall
+- [ ] 5 / 21 One-by-one realistic icons and held models
+- [ ] 7 Multiplayer item ownership + entity target 20% switch
+- [ ] 8 / 11 Realistic decorations, graphics, VHS filter, swing animation
+- [ ] 9 Video projector YouTube loop
+- [ ] 10 Elevator / room lag · 16 elevator doors · 17 light spill into dark rooms
+- [ ] 12 500 rooms, 14 elevators, community levels
+- [ ] 13 / 20 Minion changes, cockroach, new HP/damage
+- [ ] 22 / 23 New items and decorations
+- [ ] 24 3D distance sound · 25 random reloads · 26 voice chat · 28 room permissions · 29 resume position · 30 Mimic voices
