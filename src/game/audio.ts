@@ -78,13 +78,13 @@ export function setHum(v: number) { if (ctx) humGain.gain.setTargetAtTime(v, ctx
 /** One-shot recorded sound; works before the audio engine starts. */
 export function playFile(url: string, vol = 1) {
   if (typeof window === "undefined") return null;
-  const a = new Audio(url); a.volume = Math.max(0, Math.min(1, game.get().sfxVol * vol)); a.play().catch(() => {}); return a;
+  const a = new Audio(url); a.volume = Math.max(0, Math.min(1, game.get().sfxVol * vol)); a.play()?.catch?.(() => {}); return a;
 }
 let heart: HTMLAudioElement | null = null;
 /** Heartbeat loops only while chasing; when the chase ends the end sound plays once. */
 export function setChase(v: number) {
   if (typeof window === "undefined") return;
-  if (v > 0 && !heart) { heart = new Audio(heartbeatSnd.url); heart.loop = true; heart.volume = game.get().sfxVol; heart.play().catch(() => {}); }
+  if (v > 0 && !heart) { heart = new Audio(heartbeatSnd.url); heart.loop = true; heart.volume = game.get().sfxVol; heart.play()?.catch?.(() => {}); }
   else if (v <= 0 && heart) { heart.pause(); heart = null; playFile(chaseEndSnd.url); }
 }
 export function playIntro() {
