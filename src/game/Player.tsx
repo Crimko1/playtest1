@@ -221,7 +221,7 @@ export function Player() {
       if (d) {
         const before = d.angle;
         d.angle = Math.max(0, Math.min(1.7, d.angle + rt.dragDx * 0.006)); rt.dragDx = 0;
-        if (before < 0.05 && d.angle >= 0.05) sfx.door();
+        if (before < 0.05 && d.angle >= 0.05) sfx.door(); else if (before > 0 && d.angle <= 0) sfx.doorClose();
       }
     }
     const h = held();

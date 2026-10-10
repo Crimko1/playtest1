@@ -1,3 +1,13 @@
+import buyingSnd from "@/assets/sfx/buying.mp3.asset.json";
+import chaseEndSnd from "@/assets/sfx/chasingends.mp3.asset.json";
+import clickSnd from "@/assets/sfx/clickingbutton.mp3.asset.json";
+import doorCloseSnd from "@/assets/sfx/doorclose.mp3.asset.json";
+import doorOpenSnd from "@/assets/sfx/dooropen.mp3.asset.json";
+import heartbeatSnd from "@/assets/sfx/heartbeatchasing.mp3.asset.json";
+import introSnd from "@/assets/sfx/introstudio.mp3.asset.json";
+import deathSnd from "@/assets/sfx/jumpscaredeath.mp3.asset.json";
+import takeSnd from "@/assets/sfx/takingitemscrab.mp3.asset.json";
+import hoverSnd from "@/assets/sfx/uponbutton.mp3.asset.json";
 import uncannySound from "@/assets/entity-audio/uncanny.mp3.asset.json";
 import notSound from "@/assets/entity-audio/not.mp3.asset.json";
 import unknownSound from "@/assets/entity-audio/unknown.mp3.asset.json";
@@ -65,7 +75,23 @@ export function startAmbience() {
 }
 
 export function setHum(v: number) { if (ctx) humGain.gain.setTargetAtTime(v, ctx.currentTime, 0.05); }
-export function setChase(_v: number) { if (ctx) chaseGain.gain.value = 0; }
+/** One-shot recorded sound; works before the audio engine starts. */
+export function playFile(url: string, vol = 1) {
+  if (typeof window === "undefined") return null;
+  const a = new Audio(url); a.volume = Math.max(0, Math.min(1, game.get().sfxVol * vol)); a.play().catch(() => {}); return a;
+}
+let heart: HTMLAudioElement | null = null;
+/** Heartbeat loops only while chasing; when the chase ends the end sound plays once. */
+export function setChase(v: number) {
+  if (typeof window === "undefined") return;
+  if (v > 0 && !heart) { heart = new Audio(heartbeatSnd.url); heart.loop = true; heart.volume = game.get().sfxVol; heart.play().catch(() => {}); }
+  else if (v <= 0 && heart) { heart.pause(); heart = null; playFile(chaseEndSnd.url); }
+}
+export function playIntro() {
+  const a = playFile(introSnd.url);
+  if (a) a.play().catch(() => { const go = () => { a.play().catch(() => {}); }; window.addEventListener("pointerdown", go, { once: true }); window.addEventListener("keydown", go, { once: true }); });
+  return a;
+}
 
 function env(g: GainNode, a: number, peak: number, d: number) {
   const t = ctx!.currentTime;
@@ -90,15 +116,16 @@ function tone(freq: number, type: OscillatorType, peak: number, dur: number, sli
 
 export const sfx = {
   step: (run: boolean, vol = 1) => noise(run ? 500 : 380, 1.2, run ? 0.35 : 0.22, 0.09, "bandpass", vol),
-  pickup: () => { tone(660, "square", 0.08, 0.06); setTimeout(() => tone(990, "square", 0.06, 0.08), 60); },
+  pickup: () => { playFile(takeSnd.url); },
   drop: () => noise(200, 1, 0.4, 0.15, "lowpass"),
-  click: () => tone(1200, "square", 0.05, 0.03),
-  hover: () => tone(800, "sine", 0.03, 0.04),
+  click: () => { playFile(clickSnd.url, 0.8); },
+  hover: () => { playFile(hoverSnd.url, 0.6); },
   flash: () => { noise(4000, 3, 0.15, 0.03, "highpass"); },
-  door: () => { tone(140, "sawtooth", 0.05, 0.6, 60); noise(800, 6, 0.08, 0.5); },
+  door: () => { playFile(doorOpenSnd.url); },
+  doorClose: () => { playFile(doorCloseSnd.url); },
   flicker: () => { noise(6000, 1, 0.2, 0.05, "highpass"); tone(120, "square", 0.05, 0.08); },
   ding: () => { tone(880, "sine", 0.2, 0.6); setTimeout(() => tone(1320, "sine", 0.15, 0.8), 120); },
-  cash: () => { tone(1500, "triangle", 0.12, 0.1); setTimeout(() => tone(2000, "triangle", 0.12, 0.25), 80); },
+  cash: () => { playFile(buyingSnd.url); },
   hurt: () => { noise(300, 0.7, 0.6, 0.25, "lowpass"); tone(90, "sawtooth", 0.2, 0.3, -40); },
   swing: () => noise(1200, 0.8, 0.25, 0.18),
   hit: () => { noise(400, 1, 0.5, 0.12, "lowpass"); tone(70, "square", 0.25, 0.12); },
@@ -108,11 +135,7 @@ export const sfx = {
   whisper: () => noise(2500, 4, 0.06, 1.2),
   minion: () => { tone(80 + Math.random() * 40, "sawtooth", 0.06, 0.5, -20); },
   stinger: () => { tone(55, "sawtooth", 0.3, 2.5, -20); noise(200, 0.5, 0.3, 2, "lowpass"); },
-  scream: () => {
-    if (!ctx) return;
-    [380, 410, 455, 520, 610].forEach((f) => tone(f, "sawtooth", 0.25, 1.4, -200));
-    noise(2000, 0.3, 1.2, 1.4, "bandpass");
-  },
+  scream: () => { playFile(deathSnd.url); },
   drone: () => { tone(40, "sawtooth", 0.4, 3, 10); noise(100, 0.5, 0.5, 3, "lowpass"); },
   fall: () => { noise(800, 0.5, 0.5, 4, "bandpass"); tone(300, "sine", 0.1, 4, -260); },
   thud: () => { noise(120, 0.7, 1, 0.5, "lowpass"); tone(45, "sine", 0.6, 0.6); },

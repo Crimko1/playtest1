@@ -15,21 +15,46 @@ import { spawnInRoom } from "./room-actions";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 
+const LOOP_START = 4000, HEADPHONE_MS = 6000;
+function Headphones({ onDone }: { onDone: () => void }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const t0 = performance.now(); let raf = 0, last = 0;
+    const tick = () => {
+      const t = performance.now() - t0;
+      if (t >= HEADPHONE_MS + 600) { onDone(); return; }
+      if (t > LOOP_START) { const gap = Math.max(12, 380 - (t - LOOP_START) * 0.32); if (t - last > gap) { last = t; setN((v) => v + 1 + Math.floor((t - LOOP_START) / 500)); } }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick); return () => cancelAnimationFrame(raf);
+  }, [onDone]);
+  return (
+    <div className="absolute inset-0 overflow-hidden flex items-start justify-start p-[6vmin] logo-fade" style={{ ["--d" as string]: "6.6s" }}>
+      <p className="font-hud text-foreground text-2xl leading-snug break-words">
+        <span aria-hidden className="mr-3">🎧</span>For better experience, play with headphones.{Array.from({ length: Math.min(n, 900) }, () => " ... loop").join("")}
+      </p>
+    </div>
+  );
+}
+
 export function Intro() {
   const [step, setStep] = useState(0);
   useEffect(() => {
+    const snd = playIntro();
     const a = setTimeout(() => setStep(1), 5000);
     const b = setTimeout(() => setStep(2), 8000);
-    return () => { clearTimeout(a); clearTimeout(b); };
+    return () => { clearTimeout(a); clearTimeout(b); snd?.pause(); };
   }, []);
   useEffect(() => {
-    if (step !== 2) return;
+    if (step !== 3) return;
+    initAudio();
     supabase.auth.getSession().then(({ data }) => game.set({ screen: data.session ? "menu" : "auth", userId: data.session?.user.id ?? null }));
   }, [step]);
   return (
-    <div className="fixed inset-0 bg-background flex items-center justify-center" onClick={() => setStep(2)}>
+    <div className="fixed inset-0 bg-background flex items-center justify-center" onClick={() => setStep((s) => (s < 2 ? 2 : 3))}>
       {step === 0 && <img src={studioLogo} alt="Grace Studios" className="logo-fade w-[42vmin]" style={{ ["--d" as string]: "5s" }} />}
       {step === 1 && <img src={gameLogo} alt="Backrooms Q" className="logo-fade w-[60vmin]" style={{ ["--d" as string]: "3s" }} />}
+      {step === 2 && <Headphones onDone={() => setStep(3)} />}
       <span className="absolute bottom-4 right-6 text-muted-foreground font-hud">click to skip</span>
     </div>
   );
@@ -75,8 +100,8 @@ export function Menu() {
         <img src={gameLogo} alt="Backrooms Q" className="w-[min(460px,40vw)] glitch" />
         {view === "main" && (
           <div className="flex flex-col gap-2 text-3xl w-[min(420px,40vw)]">
-            <Button variant="ghost" className="menu-btn justify-start h-auto text-3xl" disabled={!loaded} onMouseEnter={() => sfx.click()} onClick={() => { begin(); game.set({ screen: playScreen(created) }); }}>PLAY</Button>
-            <button className="menu-btn" onMouseEnter={() => sfx.click()} onClick={() => setView("options")}>OPTIONS</button>
+            <Button variant="ghost" className="menu-btn justify-start h-auto text-3xl" disabled={!loaded} onMouseEnter={() => sfx.hover()} onClick={() => { begin(); game.set({ screen: playScreen(created) }); }}>PLAY</Button>
+            <button className="menu-btn" onMouseEnter={() => sfx.hover()} onClick={() => setView("options")}>OPTIONS</button>
           </div>
         )}
         {view === "options" && <Options onBack={() => setView("main")} />}
