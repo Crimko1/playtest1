@@ -105,21 +105,20 @@ export const SHOP_TOOLS = [
   { id: "flashcharge", price: TOOL_PRICES.flashcharge, desc: "Refills your flashlight battery to 100%." },
   { id: "axe", price: TOOL_PRICES.axe, desc: "Melee weapon. Kills minions. Breaks after 100 hits." },
   { id: "pistol", price: TOOL_PRICES.pistol, desc: "12-round magazine, auto reload. Breaks after 50 hits." },
-  { id: "health", price: 800, desc: "Restores 30% health." },
-  { id: "adrenaline", price: 1400, desc: "30 seconds of unlimited sprint, then used up." },
+  { id: "health", price: TOOL_PRICES.health, desc: "Restores 30% health." },
+  { id: "adrenaline", price: TOOL_PRICES.adrenaline, desc: "30 seconds of unlimited sprint, then used up." },
   { id: "navigator", price: 1300, desc: "Shows your coordinates and current room." },
-  { id: "papermap", price: TOOL_PRICES.papermap, desc: "A personal drawing sheet." },
   { id: "pipe", price: TOOL_PRICES.pipe, desc: "Steel melee pipe. Lasts 20 hits." },
-  { id: "knife", price: 800, desc: "Kitchen knife. Melee weapon, lasts 40 hits." },
+  { id: "knife", price: TOOL_PRICES.knife, desc: "Kitchen knife. Melee weapon, lasts 40 hits." },
   { id: "radar", price: 2450, desc: "Hold Right Click to scan for nearby entities and minions in real time." },
   { id: "tear", price: 2680, desc: "Hold Right Click for 3s: fall through the Backrooms and wake in the Laboratory. One use." },
 ];
 
 export const DECOR = [
-  { id: "bed", name: "Classic Bed", price: 1200, size: [2, 0.6, 1.2] as [number, number, number] },
-  { id: "holyicon", name: "Holy Icon", price: 1000, size: [0.8, 1.1, 0.1] as [number, number, number] },
-  { id: "vcrtv", name: "Vintage CRTV", price: 3100, size: [0.8, 0.7, 0.7] as [number, number, number] },
-  { id: "balloon", name: "Balloon", price: 900, size: [0.5, 1.8, 0.5] as [number, number, number] },
+  { id: "bed", name: "Classic Bed", price: DECOR_PRICES.bed, size: [2, 0.6, 1.2] as [number, number, number] },
+  { id: "holyicon", name: "Holy Icon", price: DECOR_PRICES.holyicon, size: [0.8, 1.1, 0.1] as [number, number, number] },
+  { id: "vcrtv", name: "Vintage CRTV", price: DECOR_PRICES.vcrtv, size: [0.8, 0.7, 0.7] as [number, number, number] },
+  { id: "balloon", name: "Balloon", price: DECOR_PRICES.balloon, size: [0.5, 1.8, 0.5] as [number, number, number] },
   { id: "fishtank", name: "Fish Tank", price: DECOR_PRICES.fishtank, size: [1.8, 1.65, .85] as [number, number, number] },
   { id: "painting", name: "Painting", price: DECOR_PRICES.painting, size: [1.3, .95, .12] as [number, number, number] },
   { id: "cross", name: "Cross", price: DECOR_PRICES.cross, size: [.38, .62, .09] as [number, number, number] },
@@ -127,13 +126,13 @@ export const DECOR = [
   { id: "plant", name: "Plant", price: DECOR_PRICES.plant, size: [.85, 1.85, .85] as [number, number, number] },
   { id: "custompaint", name: "Custom Paint", price: DECOR_PRICES.custompaint, size: [1.4, 1.1, .13] as [number, number, number] },
   { id: "stalkdevice", name: "Stalk Device", price: DECOR_PRICES.stalkdevice, size: [.8, .62, .45] as [number, number, number] },
-  { id: "bigbunny", name: "Big Bunny", price: 1640, size: [1.1, 1.3, 1] as [number, number, number] },
-  { id: "chessboard", name: "Chess Board", price: 1420, size: [.8, .85, .8] as [number, number, number] },
-  { id: "wallclock", name: "Wall Clock", price: 2100, size: [.7, 1.5, .25] as [number, number, number] },
-  { id: "scrapdisplay", name: "Scrap Display", price: 1630, size: [.8, 1.4, .8] as [number, number, number] },
+  { id: "bigbunny", name: "Big Bunny", price: DECOR_PRICES.bigbunny, size: [1.1, 1.3, 1] as [number, number, number] },
+  { id: "chessboard", name: "Chess Board", price: DECOR_PRICES.chessboard, size: [.8, .85, .8] as [number, number, number] },
+  { id: "wallclock", name: "Wall Clock", price: DECOR_PRICES.wallclock, size: [.7, 1.5, .25] as [number, number, number] },
+  { id: "scrapdisplay", name: "Scrap Display", price: DECOR_PRICES.scrapdisplay, size: [.8, 1.4, .8] as [number, number, number] },
   ...Object.entries(ALPHA_DECOR_PRICES).map(([id, price]) => ({ id, price, name: ({lightstand:"Light Stand",booktable:"Book Table",uppercamera:"Upper Camera",walltelephone:"Wall Telephone",jukebox:"Jukebox",candles:"Candles",blueprint:"Blueprint Machine",psbconsole:"PSB Console",projector:"Video Projector"} as Record<string,string>)[id], size: ({lightstand:[.65,1.8,.65],booktable:[1,.7,.7],uppercamera:[.8,.7,.4],walltelephone:[.45,.7,.22],jukebox:[.95,1.7,.6],candles:[.65,.95,.65],blueprint:[1.4,1.6,.9],psbconsole:[1.1,1.2,.7],projector:[.65,1.2,.65]} as Record<string,[number,number,number]>)[id] })),
 ];
-export const WALL_DECOR = new Set(["painting", "cross", "custompaint", "stalkdevice", "wallclock", "walltelephone", "uppercamera"]);
+export const WALL_DECOR = new Set(["painting", "cross", "custompaint", "stalkdevice", "wallclock", "walltelephone"]);
 
 export const OUTFITS = [
   {id:"classic",name:"Classic Hazard Suit",price:0,color:"#c9a227"},

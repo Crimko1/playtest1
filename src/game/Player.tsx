@@ -1,3 +1,4 @@
+import { canSprint, SPRINT_RECOVER } from "./rules";
 import { upperGround, isUpper, stairHeight, inStairShaft } from "./upper-world";
 import { FirstPersonTool } from "./ToolModel";
 import { useEffect, useMemo, useRef } from "react";
@@ -142,7 +143,8 @@ export function Player() {
     const walk = 3.0 * (1 + (cv >= 2 ? 0.05 : 0) + (cv >= 6 ? 0.05 : 0) + (cv >= 9 ? 0.1 : 0)) * heavyMul;
     const adren = s.adrenaline > Date.now();
     const canRun = keys.has("ShiftLeft") || keys.has("ShiftRight");
-    const running = canRun && want.lengthSq() > 0 && (s.stamina > 1 || adren);
+    if (s.stamina <= 1) rt.exhausted = true; else if (s.stamina >= SPRINT_RECOVER) rt.exhausted = false;
+    const running = canRun && want.lengthSq() > 0 && (adren || canSprint(s.stamina, !!rt.exhausted));
      const sprint = SPRINT_SPEED * (1 + (sv >= 6 ? 0.05 : 0) + (sv >= 9 ? 0.1 : 0)) * heavyMul;
      const speed = (running ? sprint : walk) * (s.terrified > Date.now() ? .55 : 1);
     if (want.lengthSq() > 0) want.normalize().multiplyScalar(speed);

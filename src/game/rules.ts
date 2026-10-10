@@ -5,8 +5,13 @@ export const SIGHT_RANGE = 48;
 export const SLEEP_MS = 2000;
 export const STORAGE_SLOTS = 10;
 export const PIPE_HITS = 20;
-export const DECOR_PRICES = { fishtank: 2300, painting: 400, cross: 730, storagebox: 810, plant: 320, custompaint: 1300, stalkdevice: 3400 } as const;
-export const TOOL_PRICES = { papermap: 1630, pipe: 470, flashcharge: 250, axe: 1480, pistol: 1900 } as const;
+export const DECOR_PRICES = { bed: 450, holyicon: 380, vcrtv: 720, balloon: 300, fishtank: 1100, painting: 330, cross: 300, storagebox: 810, plant: 340, custompaint: 1240, stalkdevice: 1500, bigbunny: 510, chessboard: 420, wallclock: 360, scrapdisplay: 1250 } as const;
+export const TOOL_PRICES = { pipe: 270, flashcharge: 250, axe: 1430, pistol: 1700, health: 400, adrenaline: 580, knife: 500 } as const;
+export const REMOVED_ITEMS = ["papermap"];
+export const REMOVED_DECOR = ["uppercamera", "candles", "jukebox"];
+/** Once stamina drops to 1 or less, sprinting stays locked until it recovers to this value. */
+export const SPRINT_RECOVER = 20;
+export function canSprint(stamina: number, exhausted: boolean) { return exhausted ? stamina >= SPRINT_RECOVER : stamina > 1; }
 export function hourlyScrapTarget(hour: number) { return 180 + ((hour * 17) % 71 + 71) % 71; }
 export function pipeRemaining(uses = PIPE_HITS) { return Math.max(0, uses - 1); }
 export function canStoreTool(id: string, count: number) { return count < STORAGE_SLOTS && ["axe", "pistol", "health", "adrenaline", "navigator", "flashcharge", "papermap", "pipe", "knife", "radar", "tear"].includes(id); }
@@ -49,7 +54,7 @@ export function verticalStep(x: number, z: number, y: number, velocity: number, 
 export const ROOM_THEME_PRICE = 1000;
 export const BLUEPRINT_MS = 16 * 60 * 60 * 1000;
 export const SPRINT_SPEED = 6.8;
-export const ALPHA_DECOR_PRICES = { lightstand: 400, booktable: 1280, uppercamera: 3130, walltelephone: 1200, jukebox: 1440, candles: 270, blueprint: 6990, psbconsole: 3400, projector: 4200 } as const;
+export const ALPHA_DECOR_PRICES = { lightstand: 380, booktable: 310, walltelephone: 1200, blueprint: 4100, psbconsole: 1200, projector: 1520 } as const;
 export function craftReady(start: number, now: number) { return now - start >= BLUEPRINT_MS; }
 export function themePayment(money: number, current: number, selected: number) { return selected === current || money < ROOM_THEME_PRICE ? null : money - ROOM_THEME_PRICE; }
 export function radarOffset(dx: number, dz: number, yaw: number) { return { x: dx * Math.cos(yaw) - dz * Math.sin(yaw), y: dx * Math.sin(yaw) + dz * Math.cos(yaw) }; }
