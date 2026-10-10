@@ -34,7 +34,7 @@ export function Player() {
     rt.camera = camera;
     camera.add(target); target.position.set(0, 0, -1);
     const canvas = gl.domElement;
-    rt.lockRequest = () => { try { canvas.requestPointerLock(); } catch { /* */ } };
+    rt.lockRequest = () => { try { canvas.requestPointerLock(); if (!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {}); } catch { /* */ } };
     const kd = (e: KeyboardEvent) => {
       const s = game.get();
        if (s.screen !== "game" || s.sleeping || s.jumpscare) return;
