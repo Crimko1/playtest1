@@ -3,6 +3,9 @@ import akamantoAsset from "@/assets/entities/akamanto.gif.asset.json";
 import handAsset from "@/assets/entities/hand.png.asset.json";
 import mimicAsset from "@/assets/entities/mimic.png.asset.json";
 import stalkerAsset from "@/assets/entities/stalker.png.asset.json";
+import charleAsset from "@/assets/entities/charle.gif.asset.json";
+import charleBunnyAsset from "@/assets/entities/charlesbunny.gif.asset.json";
+import charleFoodAsset from "@/assets/entities/charlesfood.gif.asset.json";
 import { DECOR_PRICES, TOOL_PRICES, ALPHA_DECOR_PRICES } from "./rules";
 export type ItemDef = {
   id: string;
@@ -99,6 +102,8 @@ export const ITEMS: Record<string, ItemDef> = Object.fromEntries(
   ].map((i) => [i.id, i]),
 );
 
+ITEMS.charlebunny = { id: "charlebunny", name: "Charle's Bunny", value: 0, slots: 1, scrap: false, img: charleBunnyAsset.url };
+ITEMS.charlefood = { id: "charlefood", name: "Charle's Food", value: 0, slots: 1, scrap: false, img: charleFoodAsset.url };
 export const SCRAP_IDS = Object.values(ITEMS).filter((i) => i.scrap).map((i) => i.id);
 
 export const SHOP_TOOLS = [
@@ -189,8 +194,9 @@ export const TREES: Record<TreeId, { name: string; blurb: string; stats: [string
   },
 };
 
-export type EntityId = "uncanny" | "thirsty" | "not" | "unknown" | "maka" | "blackrose" | "akamanto" | "hand" | "mimic" | "stalker";
+export type EntityId = "uncanny" | "thirsty" | "not" | "unknown" | "maka" | "blackrose" | "akamanto" | "hand" | "mimic" | "stalker" | "charle";
 export const ENTITIES: Record<EntityId, { name: string; danger: 1 | 2 | 3; img: string; appearance: string; behaviour: string; details: string }> = {
+  charle: { name: "Charle", danger: 2, img: charleAsset.url, appearance: "A huge pale head with bulging eyes and a wide grin that hops from room to room.", behaviour: "Hops toward anyone he sees and asks for help finding something he lost.", details: "Bring him what he asks for within 40 seconds. If you fail, he hunts you down very fast." },
   stalker: { name: "Stalker", danger: 1, img: stalkerAsset.url, appearance: "A tall, silent shadow watching distant dark doorways.", behaviour: "Stares silently. Watching it continuously for more than four seconds makes it rush through you.", details: "It cannot hurt you, but terror darkens your vision and slows you for five seconds. Ignore it and it disappears after 10–20 seconds." },
   uncanny: {
     name: "Uncanny", danger: 3, img: "/img/uncanny.png",
